@@ -54,6 +54,9 @@ The automation is configured via environment variables or by editing `src/config
 | `APP_HEADLESS` | Set to `false` to run the browser in headed mode. | `false` |
 | `APP_SLOWMO` | Milliseconds to slow down Playwright actions. | unset |
 
+† Defaults expand to a list of fallback selectors separated by `||`. For example the username selector defaults to `input[name="username"]||input#username||input[name="userName"]||input[formcontrolname="username"]||input[placeholder*="User"]`.
+
+The navigation sequence is described declaratively in `src/config.ts`. You can add more steps (such as additional form visits, button clicks, or input fills) to fit your workflow.
 The navigation sequence is described declaratively in `src/config.ts`. You can add more steps (such as additional form visits, b
 utton clicks, or input fills) to fit your workflow.
 
@@ -64,6 +67,9 @@ APP_BASE_URL=http://192.168.14.111/
 APP_LOGIN_PATH=/
 APP_USERNAME=dfnadmin
 APP_PASSWORD=123
+APP_USERNAME_SELECTOR=input[name="username"]||input#username||input[name="userName"]||input[formcontrolname="username"]||input[placeholder*="User"]
+APP_PASSWORD_SELECTOR=input[name="password"]||input#password||input[type="password"]||input[formcontrolname="password"]
+APP_SUBMIT_SELECTOR=button[type="submit"]||button:has-text("Login")||button:has-text("Sign In")||input[type="submit"]
 APP_USERNAME_SELECTOR=input[name="username"]
 APP_PASSWORD_SELECTOR=input[name="password"]
 APP_SUBMIT_SELECTOR=button[type="submit"]
@@ -79,6 +85,7 @@ APP_FORM_THREE_READY=
 APP_NAVIGATION_LOOP_INTERVAL_MS=0
 APP_HEADLESS=false
 APP_SLOWMO=
+DEBUG=
 ```
 
 Save this as `.env` (do not commit secrets to version control). If your application uses different routes or selectors, update t
@@ -98,5 +105,7 @@ gin.
 - Ensure Playwright browsers are installed with `npx playwright install` if you run into missing browser errors.
 - Enable headed mode (`APP_HEADLESS=false`) to watch the automation and tweak selectors.
 - Increase `APP_SLOWMO` for better visual debugging.
+- Set `DEBUG=true` when running `npm start` to print which selectors were used during login.
+- If the session is still timing out, shorten `APP_KEEP_ALIVE_INTERVAL_MS` or enable the navigation loop to revisit key pages more frequently.
 - If the session is still timing out, shorten `APP_KEEP_ALIVE_INTERVAL_MS` or enable the navigation loop to revisit key pages mo
 re frequently.

@@ -38,9 +38,9 @@ The automation is configured via environment variables or by editing `src/config
 | `APP_LOGIN_PATH` | Relative path to the login page. | `/` |
 | `APP_USERNAME` | Username used for login. | `dfnadmin` |
 | `APP_PASSWORD` | Password used for login. | `123` |
-| `APP_USERNAME_SELECTOR` | CSS selector(s) for the username field. Combine multiple selectors with `||` to provide fallbacks. | `input[name="username"]†` |
-| `APP_PASSWORD_SELECTOR` | CSS selector(s) for the password field. Combine multiple selectors with `||` to provide fallbacks. | `input[name="password"]†` |
-| `APP_SUBMIT_SELECTOR` | CSS selector(s) for the login submit button. Combine multiple selectors with `||` to provide fallbacks. | `button[type="submit"]†` |
+| `APP_USERNAME_SELECTOR` | CSS selector for the username field. | `input[name="username"]` |
+| `APP_PASSWORD_SELECTOR` | CSS selector for the password field. | `input[name="password"]` |
+| `APP_SUBMIT_SELECTOR` | CSS selector for the login submit button. | `button[type="submit"]` |
 | `APP_LOGIN_SUCCESS_SELECTOR` | Optional selector that confirms the login succeeded. | unset |
 | `APP_KEEP_ALIVE_INTERVAL_MS` | Interval in milliseconds between keep-alive actions. | `180000` |
 | `APP_KEEP_ALIVE_SELECTOR` | Selector used by default keep-alive action. | `body` |
@@ -57,6 +57,8 @@ The automation is configured via environment variables or by editing `src/config
 † Defaults expand to a list of fallback selectors separated by `||`. For example the username selector defaults to `input[name="username"]||input#username||input[name="userName"]||input[formcontrolname="username"]||input[placeholder*="User"]`.
 
 The navigation sequence is described declaratively in `src/config.ts`. You can add more steps (such as additional form visits, button clicks, or input fills) to fit your workflow.
+The navigation sequence is described declaratively in `src/config.ts`. You can add more steps (such as additional form visits, b
+utton clicks, or input fills) to fit your workflow.
 
 ## Environment file template
 
@@ -68,6 +70,9 @@ APP_PASSWORD=123
 APP_USERNAME_SELECTOR=input[name="username"]||input#username||input[name="userName"]||input[formcontrolname="username"]||input[placeholder*="User"]
 APP_PASSWORD_SELECTOR=input[name="password"]||input#password||input[type="password"]||input[formcontrolname="password"]
 APP_SUBMIT_SELECTOR=button[type="submit"]||button:has-text("Login")||button:has-text("Sign In")||input[type="submit"]
+APP_USERNAME_SELECTOR=input[name="username"]
+APP_PASSWORD_SELECTOR=input[name="password"]
+APP_SUBMIT_SELECTOR=button[type="submit"]
 APP_LOGIN_SUCCESS_SELECTOR=
 APP_KEEP_ALIVE_INTERVAL_MS=180000
 APP_KEEP_ALIVE_SELECTOR=body
@@ -102,3 +107,5 @@ gin.
 - Increase `APP_SLOWMO` for better visual debugging.
 - Set `DEBUG=true` when running `npm start` to print which selectors were used during login.
 - If the session is still timing out, shorten `APP_KEEP_ALIVE_INTERVAL_MS` or enable the navigation loop to revisit key pages more frequently.
+- If the session is still timing out, shorten `APP_KEEP_ALIVE_INTERVAL_MS` or enable the navigation loop to revisit key pages mo
+re frequently.

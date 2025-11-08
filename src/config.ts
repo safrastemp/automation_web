@@ -63,15 +63,9 @@ export const config: AutomationConfig = {
   loginPath: process.env.APP_LOGIN_PATH ?? '/',
   username: process.env.APP_USERNAME ?? 'dfnadmin',
   password: process.env.APP_PASSWORD ?? '123',
-  usernameSelector:
-    process.env.APP_USERNAME_SELECTOR ??
-    'input[name="username"]||input#username||input[name="userName"]||input[formcontrolname="username"]||input[placeholder*="User"]',
-  passwordSelector:
-    process.env.APP_PASSWORD_SELECTOR ??
-    'input[name="password"]||input#password||input[type="password"]||input[formcontrolname="password"]',
-  submitSelector:
-    process.env.APP_SUBMIT_SELECTOR ??
-    'button[type="submit"]||button:has-text("Login")||button:has-text("Sign In")||input[type="submit"]',
+  usernameSelector: process.env.APP_USERNAME_SELECTOR ?? 'input[name="username"]',
+  passwordSelector: process.env.APP_PASSWORD_SELECTOR ?? 'input[name="password"]',
+  submitSelector: process.env.APP_SUBMIT_SELECTOR ?? 'button[type="submit"]',
   loginSuccessSelector: process.env.APP_LOGIN_SUCCESS_SELECTOR,
   keepAliveIntervalMs: Number(process.env.APP_KEEP_ALIVE_INTERVAL_MS ?? 180000),
   keepAliveAction: {

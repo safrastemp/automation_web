@@ -2,61 +2,6 @@ import 'dotenv/config';
 import { BrowserContext, chromium, Page } from 'playwright';
 import { AutomationConfig, AutomationStep, config } from './config';
 
-function selectorCandidates(raw: string): string[] {
-  return raw
-    .split('||')
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
-}
-
-async function fillFirstMatch(page: Page, rawSelectors: string, value: string, fieldName: string): Promise<void> {
-  const candidates = selectorCandidates(rawSelectors);
-  let lastError: unknown;
-
-  for (const selector of candidates) {
-    const locator = page.locator(selector).first();
-    try {
-      await locator.waitFor({ state: 'visible', timeout: 5000 });
-      await locator.fill(value);
-      if (process.env.DEBUG?.toLowerCase() === 'true') {
-        console.log(`[login] filled ${fieldName} using selector: ${selector}`);
-      }
-      return;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw new Error(
-    `Unable to locate a visible ${fieldName} field. Tried selectors: ${candidates.join(', ')}. Last error: ${String(
-      lastError
-    )}`
-  );
-}
-
-async function clickFirstMatch(page: Page, rawSelectors: string, actionName: string): Promise<void> {
-  const candidates = selectorCandidates(rawSelectors);
-  let lastError: unknown;
-
-  for (const selector of candidates) {
-    const locator = page.locator(selector).first();
-    try {
-      await locator.waitFor({ state: 'visible', timeout: 5000 });
-      await Promise.all([locator.click(), page.waitForLoadState('domcontentloaded')]);
-      if (process.env.DEBUG?.toLowerCase() === 'true') {
-        console.log(`[login] clicked ${actionName} using selector: ${selector}`);
-      }
-      return;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw new Error(
-    `Unable to perform ${actionName}. Tried selectors: ${candidates.join(', ')}. Last error: ${String(lastError)}`
-  );
-}
-
 async function performStep(page: Page, step: AutomationStep, baseUrl: string): Promise<void> {
   switch (step.type) {
     case 'goto':
@@ -101,11 +46,11 @@ async function keepAlive(context: BrowserContext, cfg: AutomationConfig): Promis
 
 async function login(page: Page, cfg: AutomationConfig): Promise<void> {
   await page.goto(new URL(cfg.loginPath, cfg.baseUrl).href, { waitUntil: 'load' });
-  await fillFirstMatch(page, cfg.usernameSelector, cfg.username, 'username');
-  await fillFirstMatch(page, cfg.passwordSelector, cfg.password, 'password');
+  await page.fill(cfg.usernameSelector, cfg.username);
+  await page.fill(cfg.passwordSelector, cfg.password);
   await Promise.all([
     page.waitForLoadState('networkidle'),
-    clickFirstMatch(page, cfg.submitSelector, 'login submit'),
+    page.click(cfg.submitSelector),
     cfg.loginSuccessSelector ? page.waitForSelector(cfg.loginSuccessSelector, { state: 'visible' }) : Promise.resolve()
   ]);
 }
